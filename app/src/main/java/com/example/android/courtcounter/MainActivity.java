@@ -14,7 +14,7 @@ import java.util.EmptyStackException;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
-    Button AOne, ATwo, AThree, BOne, BTwo, BThree, Reset;
+    Button BtnTeamAOnePoint, BtnTeamATwoPoint, BtnTeamAThreePoint, BtnTeamBOnePoint, BtnTeamBTwoPoint, BtnTeamBThreePoint, BtnReset;
 
     Presenter presenter;
 
@@ -27,11 +27,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        presenter.setScoreA(0);
-        presenter.setScoreB(0);
-        presenter.clearStacks();
-        displayForTeams();
-        setBgColor();
+        if (item != null) {
+            presenter.setScoreTeamA(0);
+            presenter.setScoreTeamB(0);
+            presenter.clearStacks();
+            displayForTeams();
+            setBtnColor();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -42,30 +45,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         presenter = new Presenter();
 
-        AOne = findViewById(R.id.points1A);
-        ATwo = findViewById(R.id.points2A);
-        AThree = findViewById(R.id.points3A);
-        BOne = findViewById(R.id.points1B);
-        BTwo = findViewById(R.id.points2B);
-        BThree = findViewById(R.id.points3B);
+        BtnTeamAOnePoint = findViewById(R.id.points1A);
+        BtnTeamATwoPoint = findViewById(R.id.points2A);
+        BtnTeamAThreePoint = findViewById(R.id.points3A);
+        BtnTeamBOnePoint = findViewById(R.id.points1B);
+        BtnTeamBTwoPoint = findViewById(R.id.points2B);
+        BtnTeamBThreePoint = findViewById(R.id.points3B);
 
-        AOne.setOnClickListener(this);
-        ATwo.setOnClickListener(this);
-        AThree.setOnClickListener(this);
-        BOne.setOnClickListener(this);
-        BTwo.setOnClickListener(this);
-        BThree.setOnClickListener(this);
+        BtnTeamAOnePoint.setOnClickListener(this);
+        BtnTeamATwoPoint.setOnClickListener(this);
+        BtnTeamAThreePoint.setOnClickListener(this);
+        BtnTeamBOnePoint.setOnClickListener(this);
+        BtnTeamBTwoPoint.setOnClickListener(this);
+        BtnTeamBThreePoint.setOnClickListener(this);
 
-        AOne.setOnLongClickListener(this);
-        ATwo.setOnLongClickListener(this);
-        AThree.setOnLongClickListener(this);
-        BOne.setOnLongClickListener(this);
-        BTwo.setOnLongClickListener(this);
-        BThree.setOnLongClickListener(this);
+        BtnTeamAOnePoint.setOnLongClickListener(this);
+        BtnTeamATwoPoint.setOnLongClickListener(this);
+        BtnTeamAThreePoint.setOnLongClickListener(this);
+        BtnTeamBOnePoint.setOnLongClickListener(this);
+        BtnTeamBTwoPoint.setOnLongClickListener(this);
+        BtnTeamBThreePoint.setOnLongClickListener(this);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Reset = findViewById(R.id.reset);
-            Reset.setOnClickListener(this);
+            BtnReset = findViewById(R.id.reset);
+            BtnReset.setOnClickListener(this);
         }
 
 
@@ -75,31 +78,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.points1A:
-                presenter.buttonLogicA(1);
+                presenter.onClickButtonTeamA(1);
                 break;
             case R.id.points2A:
-                presenter.buttonLogicA(2);
+                presenter.onClickButtonTeamA(2);
                 break;
             case R.id.points3A:
-                presenter.buttonLogicA(3);
+                presenter.onClickButtonTeamA(3);
                 break;
             case R.id.points1B:
-                presenter.buttonLogicB(1);
+                presenter.onClickButtonTeamB(1);
                 break;
             case R.id.points2B:
-                presenter.buttonLogicB(2);
+                presenter.onClickButtonTeamB(2);
                 break;
             case R.id.points3B:
-                presenter.buttonLogicB(3);
+                presenter.onClickButtonTeamB(3);
                 break;
             case R.id.reset:
-                presenter.setScoreA(0);
-                presenter.setScoreB(0);
+                presenter.setScoreTeamA(0);
+                presenter.setScoreTeamB(0);
                 presenter.clearStacks();
                 displayForTeams();
                 break;
         }
-        setBgColor();
+        setBtnColor();
         displayForTeams();
     }
 
@@ -107,25 +110,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onLongClick(View v) {
         switch (v.getId()) {
             case R.id.points1A:
-                presenter.buttonLongLogicA(1);
+                presenter.onLongClickButtonTeamA(1);
                 break;
             case R.id.points2A:
-                presenter.buttonLongLogicA(2);
+                presenter.onLongClickButtonTeamA(2);
                 break;
             case R.id.points3A:
-                presenter.buttonLongLogicA(3);
+                presenter.onLongClickButtonTeamA(3);
                 break;
             case R.id.points1B:
-                presenter.buttonLongLogicB(1);
+                presenter.onLongClickButtonTeamA(1);
                 break;
             case R.id.points2B:
-                presenter.buttonLongLogicB(2);
+                presenter.onLongClickButtonTeamA(2);
                 break;
             case R.id.points3B:
-                presenter.buttonLongLogicB(3);
+                presenter.onLongClickButtonTeamA(3);
                 break;
         }
-        setBgColor();
+        setBtnColor();
         displayForTeams();
         return false;
     }
@@ -149,65 +152,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         displayForTeams();
-        setBgColor();
+        setBtnColor();
         super.onResume();
     }
 
     public void displayForTeams() {
-        TextView tvscoreA = findViewById(R.id.scoreTeamA);
-        tvscoreA.setText(String.valueOf(presenter.getScoreA()));
-        TextView tvscoreB = findViewById(R.id.scoreTeamB);
-        tvscoreB.setText(String.valueOf(presenter.getScoreB()));
+        TextView TVScoreTeamA = findViewById(R.id.scoreTeamA);
+        TVScoreTeamA.setText(String.valueOf(presenter.getScoreTeamA()));
+        TextView TVScoreTeamB = findViewById(R.id.scoreTeamB);
+        TVScoreTeamB.setText(String.valueOf(presenter.getScoreTeamB()));
     }
 
-    public void setBgColor() {
+    public void setBtnColor() {
         try {
             switch (presenter.getLastStackA()) {
                 case 1:
-                    AOne.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    ATwo.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    AThree.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 2:
-                    AOne.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    ATwo.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    AThree.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 3:
-                    AOne.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    ATwo.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    AThree.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
                     break;
             }
         } catch (EmptyStackException ex) {
-            AOne.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-            ATwo.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-            AThree.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
         }
 
         try {
             switch (presenter.getLastStackB()) {
                 case 1:
-                    BOne.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    BTwo.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BThree.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 2:
-                    BOne.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BTwo.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    BThree.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 3:
-                    BOne.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BTwo.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BThree.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
                     break;
             }
 
         } catch (EmptyStackException ex) {
-            BOne.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-            BTwo.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-            BThree.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
 
         }
 

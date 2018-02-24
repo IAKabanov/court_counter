@@ -8,41 +8,41 @@ import java.util.Stack;
  */
 
 class Presenter implements Serializable{
-    private int scoreA, scoreB;
-    private Stack<Integer> pushedA, pushedB;
+    private int scoreTeamA, scoreTeamB;
+    private Stack<Integer> pushedBtnTeamA, pushedBtnTeamB;
     private boolean longClick;
 
     Presenter(){
-        scoreA = 0;
-        scoreB = 0;
-        pushedA = new Stack<>();
-        pushedB = new Stack<>();
+        scoreTeamA = 0;
+        scoreTeamB = 0;
+        pushedBtnTeamA = new Stack<>();
+        pushedBtnTeamB = new Stack<>();
         longClick = false;
     }
 
 
-    void setScoreA(int _scoreA){
-        scoreA = _scoreA;
+    void setScoreTeamA(int _scoreA){
+        scoreTeamA = _scoreA;
     }
 
-    void setScoreB(int _scoreB){
-        scoreB = _scoreB;
+    void setScoreTeamB(int _scoreB){
+        scoreTeamB = _scoreB;
     }
-    int getScoreA(){
-        return scoreA;
+    int getScoreTeamA(){
+        return scoreTeamA;
     }
-    int getScoreB(){
-        return scoreB;
+    int getScoreTeamB(){
+        return scoreTeamB;
     }
     int getLastStackA(){
-        return pushedA.peek();
+        return pushedBtnTeamA.peek();
     }
     int getLastStackB(){
-        return pushedB.peek();
+        return pushedBtnTeamB.peek();
     }
     void clearStacks(){
-        pushedA.removeAllElements();
-        pushedB.removeAllElements();
+        pushedBtnTeamA.removeAllElements();
+        pushedBtnTeamB.removeAllElements();
     }
 
 
@@ -54,42 +54,42 @@ class Presenter implements Serializable{
         teamBtn.pop();
     }
 
-    void buttonLogicA(int whatPush) {
+    void onClickButtonTeamA(int whatPush) {
         if (!longClick) {
-            scoreA += whatPush;
-            addToStack(pushedA, whatPush);
+            scoreTeamA += whatPush;
+            addToStack(pushedBtnTeamA, whatPush);
         } else {
             longClick = false;
         }
     }
 
-    void buttonLogicB(int whatPush) {
+    void onClickButtonTeamB(int whatPush) {
         if (!longClick) {
-            scoreB += whatPush;
-            addToStack(pushedB, whatPush);
+            scoreTeamB += whatPush;
+            addToStack(pushedBtnTeamB, whatPush);
         } else {
             longClick = false;
         }
     }
 
-    void buttonLongLogicA(int whatPush) {
+    void onLongClickButtonTeamA(int whatPush) {
         longClick = true;
         try {
-            if (pushedA.get(pushedA.size() - 1) == whatPush) {
-                removeFromStack(pushedA);
-                scoreA -= whatPush;
+            if (pushedBtnTeamA.get(pushedBtnTeamA.size() - 1) == whatPush) {
+                removeFromStack(pushedBtnTeamA);
+                scoreTeamA -= whatPush;
             }
         } catch (ArrayIndexOutOfBoundsException ignored) {
 
         }
     }
 
-    void buttonLongLogicB(int whatPush) {
+    void onLongClickButtonTeamB(int whatPush) {
         longClick = true;
         try {
-            if (pushedB.get(pushedB.size() - 1) == whatPush) {
-                removeFromStack(pushedB);
-                scoreB -= whatPush;
+            if (pushedBtnTeamB.get(pushedBtnTeamB.size() - 1) == whatPush) {
+                removeFromStack(pushedBtnTeamB);
+                scoreTeamB -= whatPush;
             }
         } catch (ArrayIndexOutOfBoundsException ignored) {
 
