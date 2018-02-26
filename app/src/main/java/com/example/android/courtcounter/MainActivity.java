@@ -119,13 +119,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 presenter.onLongClickButtonTeamA(3);
                 break;
             case R.id.points1B:
-                presenter.onLongClickButtonTeamA(1);
+                presenter.onLongClickButtonTeamB(1);
                 break;
             case R.id.points2B:
-                presenter.onLongClickButtonTeamA(2);
+                presenter.onLongClickButtonTeamB(2);
                 break;
             case R.id.points3B:
-                presenter.onLongClickButtonTeamA(3);
+                presenter.onLongClickButtonTeamB(3);
                 break;
         }
         setBtnColor();
