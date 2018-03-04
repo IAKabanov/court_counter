@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,6 +40,17 @@
                 android:text="@string/score"
                 android:textColor="#000000"
                 android:textSize="56sp" />
+
+            <TextView
+                android:id="@+id/globalScoreTeamA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="@string/score"
+                android:textColor="#616161"
+                android:visibility="invisible"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/points3A"
@@ -92,6 +102,17 @@
                 android:textColor="#000000"
                 android:textSize="56sp" />
 
+            <TextView
+                android:id="@+id/globalScoreTeamB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="@string/score"
+                android:textColor="#616161"
+                android:visibility="invisible"
+                android:textSize="14sp" />
+
             <Button
                 android:id="@+id/points3B"
                 android:layout_width="match_parent"
@@ -124,5 +145,38 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
         android:text="@string/reset" />
+
+    <Button
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/next" />
+
+    <Button
+        android:id="@+id/previous"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="32dp"
+        android:visibility="invisible"
+        android:text="@string/previous" />
+
+    <Button
+        android:id="@+id/finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="32dp"
+        android:visibility="invisible"
+        android:text="@string/finish" />
+
 
 </RelativeLayout>

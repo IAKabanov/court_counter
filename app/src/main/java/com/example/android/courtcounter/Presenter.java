@@ -1,5 +1,7 @@
 package com.example.android.courtcounter;
 
+import android.content.Context;
+
 import java.io.Serializable;
 import java.util.Stack;
 
@@ -29,6 +31,7 @@ class Presenter implements Serializable{
         scoreTeamB = _scoreB;
     }
     int getScoreTeamA(){
+
         return scoreTeamA;
     }
     int getScoreTeamB(){
@@ -40,18 +43,25 @@ class Presenter implements Serializable{
     int getLastStackB(){
         return pushedBtnTeamB.peek();
     }
+    int getStackALength(){
+        return pushedBtnTeamA.size();
+    }
+    int getStackBLength(){
+        return pushedBtnTeamA.size();
+    }
+
     void clearStacks(){
         pushedBtnTeamA.removeAllElements();
         pushedBtnTeamB.removeAllElements();
     }
-
-
     private void addToStack(Stack<Integer> teamBtn, int lastPush) {
         teamBtn.push(lastPush);
     }
-
-    private void removeFromStack(Stack<Integer> teamBtn) {
-        teamBtn.pop();
+    void removeFromStackA() {
+        pushedBtnTeamA.pop();
+    }
+    void removeFromStackB() {
+        pushedBtnTeamB.pop();
     }
 
     void onClickButtonTeamA(int whatPush) {
@@ -62,7 +72,6 @@ class Presenter implements Serializable{
             longClick = false;
         }
     }
-
     void onClickButtonTeamB(int whatPush) {
         if (!longClick) {
             scoreTeamB += whatPush;
@@ -76,23 +85,25 @@ class Presenter implements Serializable{
         longClick = true;
         try {
             if (pushedBtnTeamA.get(pushedBtnTeamA.size() - 1) == whatPush) {
-                removeFromStack(pushedBtnTeamA);
+                removeFromStackA();
                 scoreTeamA -= whatPush;
             }
         } catch (ArrayIndexOutOfBoundsException ignored) {
 
         }
     }
-
     void onLongClickButtonTeamB(int whatPush) {
         longClick = true;
         try {
             if (pushedBtnTeamB.get(pushedBtnTeamB.size() - 1) == whatPush) {
-                removeFromStack(pushedBtnTeamB);
+                removeFromStackB();
                 scoreTeamB -= whatPush;
             }
         } catch (ArrayIndexOutOfBoundsException ignored) {
 
         }
     }
+//    void save(Context context){
+//        context.getSharedPreferences();
+//    }
 }

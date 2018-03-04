@@ -1,8 +1,11 @@
 package com.example.android.courtcounter;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,12 +15,30 @@ import android.widget.TextView;
 
 import java.util.EmptyStackException;
 
+/**
+ * Created by Лунтя on 27.02.2018.
+ */
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
-    Button BtnTeamAOnePoint, BtnTeamATwoPoint, BtnTeamAThreePoint, BtnTeamBOnePoint, BtnTeamBTwoPoint, BtnTeamBThreePoint, BtnReset;
+public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener {
+
+    Button BtnTeamAOnePoint, BtnTeamATwoPoint, BtnTeamAThreePoint, BtnTeamBOnePoint,
+            BtnTeamBTwoPoint, BtnTeamBThreePoint, BtnReset, BtnNext, BtnPrevious, BtnFinish;
 
     Presenter presenter;
 
+    public static final String APP_PREFERENCES = "mysettings";
+    public static final String APP_PREFERENCES_SCOREA = "ScoreAQuarter1";
+    public static final String APP_PREFERENCES_SCOREB = "ScoreBQuarter1";
+    public static final String APP_PREFERENCES_SCOREA_STACK = "ScoreAStackQuarter1";
+    public static final String APP_PREFERENCES_SCOREB_STACK = "ScoreBStackQuarter1";
+    SharedPreferences TeamsScore;
+
+
+    final int firstQuarter = 0, secondQuarter = 1, thirdQuarter = 2, fourthQuarter = 3;
+    int currentState = firstQuarter, globalState = firstQuarter;
+    final int maxState = fourthQuarter;
+
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -37,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return super.onOptionsItemSelected(item);
     }
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +67,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         presenter = new Presenter();
 
+        //TeamsScore = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
         BtnTeamAOnePoint = findViewById(R.id.points1A);
         BtnTeamATwoPoint = findViewById(R.id.points2A);
         BtnTeamAThreePoint = findViewById(R.id.points3A);
         BtnTeamBOnePoint = findViewById(R.id.points1B);
         BtnTeamBTwoPoint = findViewById(R.id.points2B);
         BtnTeamBThreePoint = findViewById(R.id.points3B);
+        BtnNext = findViewById(R.id.next);
+        BtnPrevious = findViewById(R.id.previous);
+        BtnFinish = findViewById(R.id.finish);
 
         BtnTeamAOnePoint.setOnClickListener(this);
         BtnTeamATwoPoint.setOnClickListener(this);
@@ -58,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BtnTeamBOnePoint.setOnClickListener(this);
         BtnTeamBTwoPoint.setOnClickListener(this);
         BtnTeamBThreePoint.setOnClickListener(this);
+        BtnNext.setOnClickListener(this);
+        BtnPrevious.setOnClickListener(this);
+        BtnFinish.setOnClickListener(this);
 
         BtnTeamAOnePoint.setOnLongClickListener(this);
         BtnTeamATwoPoint.setOnLongClickListener(this);
@@ -66,10 +96,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BtnTeamBTwoPoint.setOnLongClickListener(this);
         BtnTeamBThreePoint.setOnLongClickListener(this);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            BtnReset = findViewById(R.id.reset);
-            BtnReset.setOnClickListener(this);
-        }
+
+        //if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        BtnReset = findViewById(R.id.reset);
+        BtnReset.setOnClickListener(this);
+        BtnReset.setOnLongClickListener(this);
+        //}
 
 
     }
@@ -101,6 +133,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 presenter.clearStacks();
                 displayForTeams();
                 break;
+            case R.id.next:
+                if (currentState < maxState) {
+                    currentState++;
+                    if ((globalState < fourthQuarter) && (currentState > globalState))
+                        globalState++;
+                    rebuildActivity(currentState);
+                }
+                break;
+            case R.id.previous:
+                if (currentState > maxState) {
+                    currentState--;
+                }
+                currentState--;
+                rebuildActivity(currentState);
+                break;
+            case R.id.finish:
+                globalState++;
+                rebuildActivity(currentState);
+                break;
+
         }
         setBtnColor();
         displayForTeams();
@@ -134,6 +186,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected void onStop() {
+        saveScore();
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         presenter = null;
         super.onDestroy();
@@ -147,6 +205,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onSaveInstanceState(Bundle outState) {
         outState.putSerializable("presenter", presenter);
         super.onSaveInstanceState(outState);
+    }
+
+    private void saveScore() {
+        SharedPreferences.Editor editor = TeamsScore.edit();
+        editor.putInt(APP_PREFERENCES_SCOREA, presenter.getScoreTeamA());
+        editor.putInt(APP_PREFERENCES_SCOREB, presenter.getScoreTeamB());
+        editor.apply();
+    }
+
+    private void saveStacks() {
+        StringBuilder scoreA = new StringBuilder();
+        SharedPreferences.Editor editor = TeamsScore.edit();
+        String scoreB = "";
+        while (presenter.getStackALength() != 0) {
+            scoreA.append(presenter.getLastStackA());
+            presenter.removeFromStackA();
+        }
+
+        editor.apply();
+
     }
 
     @Override
@@ -167,19 +245,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             switch (presenter.getLastStackA()) {
                 case 1:
-                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 2:
-                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 3:
-                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources()
+                            .getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
                     break;
             }
         } catch (EmptyStackException ex) {
@@ -216,5 +303,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-}
+    void rebuildActivity(int currentState) {
+        switch (currentState) {
+            case firstQuarter:
+                BtnPrevious.setVisibility(View.INVISIBLE);
+                BtnNext.setVisibility(View.VISIBLE);
+                BtnFinish.setVisibility(View.INVISIBLE);
+                break;
+            case secondQuarter:
+                BtnPrevious.setVisibility(View.VISIBLE);
+                BtnNext.setVisibility(View.VISIBLE);
+                BtnFinish.setVisibility(View.INVISIBLE);
+                break;
+            case thirdQuarter:
+                BtnPrevious.setVisibility(View.VISIBLE);
+                BtnNext.setVisibility(View.VISIBLE);
+                BtnFinish.setVisibility(View.INVISIBLE);
+                break;
+            case fourthQuarter:
+                BtnPrevious.setVisibility(View.VISIBLE);
+                BtnNext.setVisibility(View.INVISIBLE);
+                if (globalState == fourthQuarter+1)
+                BtnFinish.setVisibility(View.INVISIBLE);
+                else BtnFinish.setVisibility(View.VISIBLE);
+                break;
+        }
 
+        if (currentState < globalState) {
+            BtnTeamAOnePoint.setEnabled(false);
+            BtnTeamATwoPoint.setEnabled(false);
+            BtnTeamAThreePoint.setEnabled(false);
+            BtnTeamBOnePoint.setEnabled(false);
+            BtnTeamBTwoPoint.setEnabled(false);
+            BtnTeamBThreePoint.setEnabled(false);
+        } else {
+            BtnTeamAOnePoint.setEnabled(true);
+            BtnTeamATwoPoint.setEnabled(true);
+            BtnTeamAThreePoint.setEnabled(true);
+            BtnTeamBOnePoint.setEnabled(true);
+            BtnTeamBTwoPoint.setEnabled(true);
+            BtnTeamBThreePoint.setEnabled(true);
+        }
+
+    }
+}

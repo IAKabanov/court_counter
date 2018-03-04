@@ -7,4 +7,12 @@
     <string name="points3">+3 Points</string>
     <string name="points2">+2 Points</string>
     <string name="points1">Free throw</string>
+    <string name="firstQuarter">First quarter</string>
+    <string name="secondQuarter">Second quarter</string>
+    <string name="thirdQuarter">Third quarter</string>
+    <string name="fourthQuarter">Fourth quarter</string>
+    <string name="start">Lets start it</string>
+    <string name="next">next</string>
+    <string name="previous">previous</string>
+    <string name="finish">Finish</string>
 </resources>
