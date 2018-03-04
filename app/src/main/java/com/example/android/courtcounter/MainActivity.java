@@ -15,10 +15,6 @@ import android.widget.TextView;
 
 import java.util.EmptyStackException;
 
-/**
- * Created by Лунтя on 27.02.2018.
- */
-
 public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener {
 
     Button BtnTeamAOnePoint, BtnTeamATwoPoint, BtnTeamAThreePoint, BtnTeamBOnePoint,
@@ -27,10 +23,15 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     Presenter presenter;
 
     public static final String APP_PREFERENCES = "mysettings";
-    public static final String APP_PREFERENCES_SCOREA = "ScoreAQuarter1";
-    public static final String APP_PREFERENCES_SCOREB = "ScoreBQuarter1";
-    public static final String APP_PREFERENCES_SCOREA_STACK = "ScoreAStackQuarter1";
-    public static final String APP_PREFERENCES_SCOREB_STACK = "ScoreBStackQuarter1";
+    public static final String APP_PREFERENCES_SCOREA1 = "ScoreAQuarter1";
+    public static final String APP_PREFERENCES_SCOREB1 = "ScoreBQuarter1";
+    public static final String APP_PREFERENCES_SCOREA2 = "ScoreAQuarter2";
+    public static final String APP_PREFERENCES_SCOREB2 = "ScoreBQuarter2";
+    public static final String APP_PREFERENCES_SCOREA3 = "ScoreAQuarter3";
+    public static final String APP_PREFERENCES_SCOREB3 = "ScoreBQuarter3";
+    public static final String APP_PREFERENCES_SCOREA4 = "ScoreAQuarter4";
+    public static final String APP_PREFERENCES_SCOREB4 = "ScoreBQuarter4";
+
     SharedPreferences TeamsScore;
 
 
@@ -185,17 +186,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         return false;
     }
 
-    @Override
-    protected void onStop() {
-        saveScore();
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        presenter = null;
-        super.onDestroy();
-    }
 
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         presenter = (Presenter) savedInstanceState.get("presenter");
@@ -207,25 +197,12 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         super.onSaveInstanceState(outState);
     }
 
-    private void saveScore() {
-        SharedPreferences.Editor editor = TeamsScore.edit();
-        editor.putInt(APP_PREFERENCES_SCOREA, presenter.getScoreTeamA());
-        editor.putInt(APP_PREFERENCES_SCOREB, presenter.getScoreTeamB());
-        editor.apply();
-    }
-
-    private void saveStacks() {
-        StringBuilder scoreA = new StringBuilder();
-        SharedPreferences.Editor editor = TeamsScore.edit();
-        String scoreB = "";
-        while (presenter.getStackALength() != 0) {
-            scoreA.append(presenter.getLastStackA());
-            presenter.removeFromStackA();
-        }
-
-        editor.apply();
-
-    }
+//    private void saveScore() {
+//        SharedPreferences.Editor editor = TeamsScore.edit();
+//        editor.putInt(APP_PREFERENCES_SCOREA, presenter.getScoreTeamA());
+//        editor.putInt(APP_PREFERENCES_SCOREB, presenter.getScoreTeamB());
+//        editor.apply();
+//    }
 
     @Override
     protected void onResume() {
