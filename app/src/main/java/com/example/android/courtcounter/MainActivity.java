@@ -1,43 +1,27 @@
 package com.example.android.courtcounter;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.EmptyStackException;
 
-public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener {
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
 
     Button BtnTeamAOnePoint, BtnTeamATwoPoint, BtnTeamAThreePoint, BtnTeamBOnePoint,
-            BtnTeamBTwoPoint, BtnTeamBThreePoint, BtnReset, BtnNext, BtnPrevious, BtnFinish;
+            BtnTeamBTwoPoint, BtnTeamBThreePoint, /*BtnReset*/ BtnNext, BtnPrevious, BtnFinish;
 
     Presenter presenter;
-
-    public static final String APP_PREFERENCES = "mysettings";
-    public static final String APP_PREFERENCES_SCOREA1 = "ScoreAQuarter1";
-    public static final String APP_PREFERENCES_SCOREB1 = "ScoreBQuarter1";
-    public static final String APP_PREFERENCES_SCOREA2 = "ScoreAQuarter2";
-    public static final String APP_PREFERENCES_SCOREB2 = "ScoreBQuarter2";
-    public static final String APP_PREFERENCES_SCOREA3 = "ScoreAQuarter3";
-    public static final String APP_PREFERENCES_SCOREB3 = "ScoreBQuarter3";
-    public static final String APP_PREFERENCES_SCOREA4 = "ScoreAQuarter4";
-    public static final String APP_PREFERENCES_SCOREB4 = "ScoreBQuarter4";
-
-    SharedPreferences TeamsScore;
-
 
     final int firstQuarter = 0, secondQuarter = 1, thirdQuarter = 2, fourthQuarter = 3;
     int currentState = firstQuarter, globalState = firstQuarter;
     final int maxState = fourthQuarter;
+
+    SaveRestoreScore saveRestore;
 
 /*
     @Override
@@ -66,9 +50,9 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        presenter = new Presenter();
+        saveRestore = new SaveRestoreScore();
 
-        //TeamsScore = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        presenter = new Presenter();
 
         BtnTeamAOnePoint = findViewById(R.id.points1A);
         BtnTeamATwoPoint = findViewById(R.id.points2A);
@@ -97,14 +81,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         BtnTeamBTwoPoint.setOnLongClickListener(this);
         BtnTeamBThreePoint.setOnLongClickListener(this);
 
-
-        //if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-        BtnReset = findViewById(R.id.reset);
-        BtnReset.setOnClickListener(this);
-        BtnReset.setOnLongClickListener(this);
-        //}
-
-
     }
 
     @Override
@@ -128,17 +104,24 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             case R.id.points3B:
                 presenter.onClickButtonTeamB(3);
                 break;
-            case R.id.reset:
-                presenter.setScoreTeamA(0);
-                presenter.setScoreTeamB(0);
-                presenter.clearStacks();
-                displayForTeams();
-                break;
+//            case R.id.reset:
+//                presenter.setScoreTeamA(0);
+//                presenter.setScoreTeamB(0);
+//                presenter.clearStacks();
+//                break;
             case R.id.next:
+                if (globalState <= maxState){
+                    saveRestore.save(this, globalState,
+                            presenter.getScoreTeamA(), presenter.getScoreTeamB());
+                }
                 if (currentState < maxState) {
+                    presenter.clearStacks();
+                    presenter.setScoreTeamA(0);
+                    presenter.setScoreTeamB(0);
                     currentState++;
                     if ((globalState < fourthQuarter) && (currentState > globalState))
                         globalState++;
+
                     rebuildActivity(currentState);
                 }
                 break;
@@ -150,13 +133,16 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 rebuildActivity(currentState);
                 break;
             case R.id.finish:
+                saveRestore.save(this, globalState,
+                        presenter.getScoreTeamA(), presenter.getScoreTeamB());
                 globalState++;
+                presenter.clearStacks();
                 rebuildActivity(currentState);
                 break;
 
         }
         setBtnColor();
-        displayForTeams();
+        rebuildActivity(currentState);
     }
 
     @Override
@@ -182,7 +168,6 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 break;
         }
         setBtnColor();
-        displayForTeams();
         return false;
     }
 
@@ -197,25 +182,35 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         super.onSaveInstanceState(outState);
     }
 
-//    private void saveScore() {
-//        SharedPreferences.Editor editor = TeamsScore.edit();
-//        editor.putInt(APP_PREFERENCES_SCOREA, presenter.getScoreTeamA());
-//        editor.putInt(APP_PREFERENCES_SCOREB, presenter.getScoreTeamB());
-//        editor.apply();
+//    @Override
+//    protected void onResume() {
+//        displayForTeams();
+//        setBtnColor();
+//        super.onResume();
 //    }
 
-    @Override
-    protected void onResume() {
-        displayForTeams();
-        setBtnColor();
-        super.onResume();
-    }
-
-    public void displayForTeams() {
+    public void displayForTeams(int globalScoreA, int globalScoreB) {
         TextView TVScoreTeamA = findViewById(R.id.scoreTeamA);
         TVScoreTeamA.setText(String.valueOf(presenter.getScoreTeamA()));
+
         TextView TVScoreTeamB = findViewById(R.id.scoreTeamB);
         TVScoreTeamB.setText(String.valueOf(presenter.getScoreTeamB()));
+
+        if ((globalScoreA!=0) || (globalScoreB!=0)) {
+            TextView TVGlobalScoreA = findViewById(R.id.globalScoreTeamA);
+            TVGlobalScoreA.setVisibility(View.VISIBLE);
+            TVGlobalScoreA.setText(String.valueOf(globalScoreA));
+
+            TextView TVGlobalScoreB = findViewById(R.id.globalScoreTeamB);
+            TVGlobalScoreB.setVisibility(View.VISIBLE);
+            TVGlobalScoreB.setText(String.valueOf(globalScoreB));
+        }
+        else {
+            TextView TVGlobalScoreA = findViewById(R.id.globalScoreTeamA);
+            TVGlobalScoreA.setVisibility(View.INVISIBLE);
+            TextView TVGlobalScoreB = findViewById(R.id.globalScoreTeamB);
+            TVGlobalScoreB.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void setBtnColor() {
@@ -286,22 +281,67 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 BtnPrevious.setVisibility(View.INVISIBLE);
                 BtnNext.setVisibility(View.VISIBLE);
                 BtnFinish.setVisibility(View.INVISIBLE);
+
+                if (globalState != currentState) {
+                    presenter.setScoreTeamA(saveRestore.restoreTeamA(this, firstQuarter));
+                    presenter.setScoreTeamB(saveRestore.restoreTeamB(this, firstQuarter));
+                }
+                displayForTeams(0,0);
+
                 break;
+
             case secondQuarter:
                 BtnPrevious.setVisibility(View.VISIBLE);
                 BtnNext.setVisibility(View.VISIBLE);
                 BtnFinish.setVisibility(View.INVISIBLE);
+
+                if (globalState != currentState) {
+                    presenter.setScoreTeamA(saveRestore.restoreTeamA(this, secondQuarter));
+                    presenter.setScoreTeamB(saveRestore.restoreTeamB(this, secondQuarter));
+                }
+                displayForTeams(saveRestore.restoreTeamA(this, firstQuarter),
+                        saveRestore.restoreTeamB(this, firstQuarter));
+
                 break;
+
             case thirdQuarter:
                 BtnPrevious.setVisibility(View.VISIBLE);
                 BtnNext.setVisibility(View.VISIBLE);
                 BtnFinish.setVisibility(View.INVISIBLE);
+
+                if (globalState != currentState) {
+                    presenter.setScoreTeamA(saveRestore.restoreTeamA(this, thirdQuarter));
+                    presenter.setScoreTeamB(saveRestore.restoreTeamB(this, thirdQuarter));
+                }
+                int globalScoreA = saveRestore.restoreTeamA(this, firstQuarter)+
+                        saveRestore.restoreTeamA(this, secondQuarter);
+
+                int globalScoreB = saveRestore.restoreTeamB(this, firstQuarter)+
+                        saveRestore.restoreTeamB(this, secondQuarter);
+
+                displayForTeams(globalScoreA,globalScoreB);
+
                 break;
             case fourthQuarter:
                 BtnPrevious.setVisibility(View.VISIBLE);
                 BtnNext.setVisibility(View.INVISIBLE);
-                if (globalState == fourthQuarter+1)
-                BtnFinish.setVisibility(View.INVISIBLE);
+
+                if (currentState < globalState) {
+                    presenter.setScoreTeamA(saveRestore.restoreTeamA(this, fourthQuarter));
+                    presenter.setScoreTeamB(saveRestore.restoreTeamB(this, fourthQuarter));
+                }
+                int globalScoreA2 = saveRestore.restoreTeamA(this, firstQuarter)+
+                        saveRestore.restoreTeamA(this, secondQuarter)+
+                        saveRestore.restoreTeamA(this, thirdQuarter);
+
+                int globalScoreB2 = saveRestore.restoreTeamB(this, firstQuarter)+
+                        saveRestore.restoreTeamB(this, secondQuarter)+
+                        saveRestore.restoreTeamB(this, thirdQuarter);
+
+                displayForTeams(globalScoreA2,globalScoreB2);
+
+                if (globalState == fourthQuarter + 1)
+                    BtnFinish.setVisibility(View.INVISIBLE);
                 else BtnFinish.setVisibility(View.VISIBLE);
                 break;
         }

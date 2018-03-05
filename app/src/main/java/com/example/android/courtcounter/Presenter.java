@@ -1,13 +1,10 @@
 package com.example.android.courtcounter;
 
-import android.content.Context;
 
 import java.io.Serializable;
 import java.util.Stack;
 
-/**
- * Created by Лунтя on 22.02.2018.
- */
+
 
 class Presenter implements Serializable{
     private int scoreTeamA, scoreTeamB;
@@ -43,12 +40,7 @@ class Presenter implements Serializable{
     int getLastStackB(){
         return pushedBtnTeamB.peek();
     }
-    int getStackALength(){
-        return pushedBtnTeamA.size();
-    }
-    int getStackBLength(){
-        return pushedBtnTeamA.size();
-    }
+
 
     void clearStacks(){
         pushedBtnTeamA.removeAllElements();
@@ -103,7 +95,5 @@ class Presenter implements Serializable{
 
         }
     }
-//    void save(Context context){
-//        context.getSharedPreferences();
-//    }
+
 }
