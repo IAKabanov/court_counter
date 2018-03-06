@@ -13,7 +13,7 @@ import java.util.EmptyStackException;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
 
     Button BtnTeamAOnePoint, BtnTeamATwoPoint, BtnTeamAThreePoint, BtnTeamBOnePoint,
-            BtnTeamBTwoPoint, BtnTeamBThreePoint, /*BtnReset*/ BtnNext, BtnPrevious, BtnFinish;
+            BtnTeamBTwoPoint, BtnTeamBThreePoint, BtnReset, BtnNext, BtnPrevious, BtnFinish;
 
     Presenter presenter;
 
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         saveRestore = new SaveRestoreScore();
+        saveRestore.clearSP(this);
 
         presenter = new Presenter();
 
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BtnNext = findViewById(R.id.next);
         BtnPrevious = findViewById(R.id.previous);
         BtnFinish = findViewById(R.id.finish);
+        BtnReset = findViewById(R.id.reset);
 
         BtnTeamAOnePoint.setOnClickListener(this);
         BtnTeamATwoPoint.setOnClickListener(this);
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BtnNext.setOnClickListener(this);
         BtnPrevious.setOnClickListener(this);
         BtnFinish.setOnClickListener(this);
+        BtnReset.setOnClickListener(this);
 
         BtnTeamAOnePoint.setOnLongClickListener(this);
         BtnTeamATwoPoint.setOnLongClickListener(this);
@@ -89,33 +92,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.points1A:
                 presenter.onClickButtonTeamA(1);
                 break;
+
             case R.id.points2A:
                 presenter.onClickButtonTeamA(2);
                 break;
+
             case R.id.points3A:
                 presenter.onClickButtonTeamA(3);
                 break;
+
             case R.id.points1B:
                 presenter.onClickButtonTeamB(1);
                 break;
+
             case R.id.points2B:
                 presenter.onClickButtonTeamB(2);
                 break;
+
             case R.id.points3B:
                 presenter.onClickButtonTeamB(3);
                 break;
-//            case R.id.reset:
-//                presenter.setScoreTeamA(0);
-//                presenter.setScoreTeamB(0);
-//                presenter.clearStacks();
-//                break;
+
             case R.id.next:
-                if (globalState <= maxState){
-                    saveRestore.save(this, globalState,
-                            presenter.getScoreTeamA(), presenter.getScoreTeamB());
-                }
+//                if (globalState <= maxState) {
+//                }
                 if (currentState < maxState) {
-                    presenter.clearStacks();
+
                     presenter.setScoreTeamA(0);
                     presenter.setScoreTeamB(0);
                     currentState++;
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     rebuildActivity(currentState);
                 }
                 break;
+
             case R.id.previous:
                 if (currentState > maxState) {
                     currentState--;
@@ -132,15 +135,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 currentState--;
                 rebuildActivity(currentState);
                 break;
+
             case R.id.finish:
                 saveRestore.save(this, globalState,
                         presenter.getScoreTeamA(), presenter.getScoreTeamB());
                 globalState++;
-                presenter.clearStacks();
+                presenter.clearStackA();
+                presenter.clearStackB();
                 rebuildActivity(currentState);
                 break;
 
+            case R.id.reset:
+//                presenter.setScoreTeamA(0);
+//                presenter.setScoreTeamB(0);
+//                presenter.clearStacks();
+                break;
         }
+        saveScoreOnActivity();
         setBtnColor();
         rebuildActivity(currentState);
     }
@@ -196,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextView TVScoreTeamB = findViewById(R.id.scoreTeamB);
         TVScoreTeamB.setText(String.valueOf(presenter.getScoreTeamB()));
 
-        if ((globalScoreA!=0) || (globalScoreB!=0)) {
+        if ((globalScoreA != 0) || (globalScoreB != 0)) {
             TextView TVGlobalScoreA = findViewById(R.id.globalScoreTeamA);
             TVGlobalScoreA.setVisibility(View.VISIBLE);
             TVGlobalScoreA.setText(String.valueOf(globalScoreA));
@@ -204,8 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             TextView TVGlobalScoreB = findViewById(R.id.globalScoreTeamB);
             TVGlobalScoreB.setVisibility(View.VISIBLE);
             TVGlobalScoreB.setText(String.valueOf(globalScoreB));
-        }
-        else {
+        } else {
             TextView TVGlobalScoreA = findViewById(R.id.globalScoreTeamA);
             TVGlobalScoreA.setVisibility(View.INVISIBLE);
             TextView TVGlobalScoreB = findViewById(R.id.globalScoreTeamB);
@@ -276,17 +286,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void rebuildActivity(int currentState) {
+
         switch (currentState) {
+
             case firstQuarter:
                 BtnPrevious.setVisibility(View.INVISIBLE);
                 BtnNext.setVisibility(View.VISIBLE);
                 BtnFinish.setVisibility(View.INVISIBLE);
 
-                if (globalState != currentState) {
-                    presenter.setScoreTeamA(saveRestore.restoreTeamA(this, firstQuarter));
-                    presenter.setScoreTeamB(saveRestore.restoreTeamB(this, firstQuarter));
-                }
-                displayForTeams(0,0);
+                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, firstQuarter));
+                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, firstQuarter));
+
+                displayForTeams(0, 0);
 
                 break;
 
@@ -295,10 +306,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BtnNext.setVisibility(View.VISIBLE);
                 BtnFinish.setVisibility(View.INVISIBLE);
 
-                if (globalState != currentState) {
-                    presenter.setScoreTeamA(saveRestore.restoreTeamA(this, secondQuarter));
-                    presenter.setScoreTeamB(saveRestore.restoreTeamB(this, secondQuarter));
-                }
+                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, secondQuarter));
+                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, secondQuarter));
+
                 displayForTeams(saveRestore.restoreTeamA(this, firstQuarter),
                         saveRestore.restoreTeamB(this, firstQuarter));
 
@@ -309,40 +319,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BtnNext.setVisibility(View.VISIBLE);
                 BtnFinish.setVisibility(View.INVISIBLE);
 
-                if (globalState != currentState) {
-                    presenter.setScoreTeamA(saveRestore.restoreTeamA(this, thirdQuarter));
-                    presenter.setScoreTeamB(saveRestore.restoreTeamB(this, thirdQuarter));
-                }
-                int globalScoreA = saveRestore.restoreTeamA(this, firstQuarter)+
+
+                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, thirdQuarter));
+                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, thirdQuarter));
+
+                int globalScoreA = saveRestore.restoreTeamA(this, firstQuarter) +
                         saveRestore.restoreTeamA(this, secondQuarter);
 
-                int globalScoreB = saveRestore.restoreTeamB(this, firstQuarter)+
+                int globalScoreB = saveRestore.restoreTeamB(this, firstQuarter) +
                         saveRestore.restoreTeamB(this, secondQuarter);
 
-                displayForTeams(globalScoreA,globalScoreB);
+                displayForTeams(globalScoreA, globalScoreB);
 
                 break;
             case fourthQuarter:
                 BtnPrevious.setVisibility(View.VISIBLE);
                 BtnNext.setVisibility(View.INVISIBLE);
 
-                if (currentState < globalState) {
-                    presenter.setScoreTeamA(saveRestore.restoreTeamA(this, fourthQuarter));
-                    presenter.setScoreTeamB(saveRestore.restoreTeamB(this, fourthQuarter));
-                }
-                int globalScoreA2 = saveRestore.restoreTeamA(this, firstQuarter)+
-                        saveRestore.restoreTeamA(this, secondQuarter)+
+
+                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, fourthQuarter));
+                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, fourthQuarter));
+
+                int globalScoreA2 = saveRestore.restoreTeamA(this, firstQuarter) +
+                        saveRestore.restoreTeamA(this, secondQuarter) +
                         saveRestore.restoreTeamA(this, thirdQuarter);
 
-                int globalScoreB2 = saveRestore.restoreTeamB(this, firstQuarter)+
-                        saveRestore.restoreTeamB(this, secondQuarter)+
+                int globalScoreB2 = saveRestore.restoreTeamB(this, firstQuarter) +
+                        saveRestore.restoreTeamB(this, secondQuarter) +
                         saveRestore.restoreTeamB(this, thirdQuarter);
 
-                displayForTeams(globalScoreA2,globalScoreB2);
+                displayForTeams(globalScoreA2, globalScoreB2);
 
-                if (globalState == fourthQuarter + 1)
+                if (globalState == fourthQuarter + 1) {
                     BtnFinish.setVisibility(View.INVISIBLE);
-                else BtnFinish.setVisibility(View.VISIBLE);
+                    BtnReset.setVisibility(View.VISIBLE);
+                } else {
+                    BtnFinish.setVisibility(View.VISIBLE);
+                    BtnReset.setVisibility(View.INVISIBLE);
+                }
                 break;
         }
 
@@ -362,5 +376,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BtnTeamBThreePoint.setEnabled(true);
         }
 
+        if (presenter.getScoreTeamA() == 0){
+            presenter.clearStackA();
+        }
+        if (presenter.getScoreTeamB() == 0){
+            presenter.clearStackB();
+        }
+    }
+
+    void saveScoreOnActivity() {
+        saveRestore.save(this, currentState,
+                presenter.getScoreTeamA(), presenter.getScoreTeamB());
     }
 }

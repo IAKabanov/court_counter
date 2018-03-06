@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
-
 class SaveRestoreScore {
 
     private static final String APP_PREFERENCES = "mysettings";
@@ -52,23 +51,23 @@ class SaveRestoreScore {
         TeamsScore = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         switch (quarter) {
             case firstQuarter:
-                if(TeamsScore.contains(APP_PREFERENCES_SCOREA1)) {
+                if (TeamsScore.contains(APP_PREFERENCES_SCOREA1)) {
                     return TeamsScore.getInt(APP_PREFERENCES_SCOREA1, 0);
                 }
                 break;
             case secondQuarter:
-                if(TeamsScore.contains(APP_PREFERENCES_SCOREA2)) {
+                if (TeamsScore.contains(APP_PREFERENCES_SCOREA2)) {
                     return TeamsScore.getInt(APP_PREFERENCES_SCOREA2, 0);
                 }
                 break;
             case thirdQuarter:
-                if(TeamsScore.contains(APP_PREFERENCES_SCOREA3)) {
+                if (TeamsScore.contains(APP_PREFERENCES_SCOREA3)) {
                     return TeamsScore.getInt(APP_PREFERENCES_SCOREA3, 0);
                 }
                 break;
 
             case fourthQuarter:
-                if(TeamsScore.contains(APP_PREFERENCES_SCOREA4)) {
+                if (TeamsScore.contains(APP_PREFERENCES_SCOREA4)) {
                     return TeamsScore.getInt(APP_PREFERENCES_SCOREA4, 0);
                 }
                 break;
@@ -80,23 +79,23 @@ class SaveRestoreScore {
         TeamsScore = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         switch (quarter) {
             case firstQuarter:
-                if(TeamsScore.contains(APP_PREFERENCES_SCOREB1)) {
+                if (TeamsScore.contains(APP_PREFERENCES_SCOREB1)) {
                     return TeamsScore.getInt(APP_PREFERENCES_SCOREB1, 0);
                 }
                 break;
             case secondQuarter:
-                if(TeamsScore.contains(APP_PREFERENCES_SCOREB2)) {
+                if (TeamsScore.contains(APP_PREFERENCES_SCOREB2)) {
                     return TeamsScore.getInt(APP_PREFERENCES_SCOREB2, 0);
                 }
                 break;
             case thirdQuarter:
-                if(TeamsScore.contains(APP_PREFERENCES_SCOREB3)) {
+                if (TeamsScore.contains(APP_PREFERENCES_SCOREB3)) {
                     return TeamsScore.getInt(APP_PREFERENCES_SCOREB3, 0);
                 }
                 break;
 
             case fourthQuarter:
-                if(TeamsScore.contains(APP_PREFERENCES_SCOREB4)) {
+                if (TeamsScore.contains(APP_PREFERENCES_SCOREB4)) {
                     return TeamsScore.getInt(APP_PREFERENCES_SCOREB4, 0);
                 }
                 break;
@@ -104,5 +103,20 @@ class SaveRestoreScore {
         return 0;
     }
 
+    void clearSP(Context context) {
+        TeamsScore = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = TeamsScore.edit();
 
+        editor.putInt(APP_PREFERENCES_SCOREA1, 0);
+        editor.putInt(APP_PREFERENCES_SCOREB1, 0);
+        editor.putInt(APP_PREFERENCES_SCOREA2, 0);
+        editor.putInt(APP_PREFERENCES_SCOREB2, 0);
+        editor.putInt(APP_PREFERENCES_SCOREA3, 0);
+        editor.putInt(APP_PREFERENCES_SCOREB3, 0);
+        editor.putInt(APP_PREFERENCES_SCOREA4, 0);
+        editor.putInt(APP_PREFERENCES_SCOREB4, 0);
+        editor.apply();
+
+
+    }
 }

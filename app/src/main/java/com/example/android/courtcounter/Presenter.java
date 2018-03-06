@@ -42,8 +42,10 @@ class Presenter implements Serializable{
     }
 
 
-    void clearStacks(){
+    void clearStackA(){
         pushedBtnTeamA.removeAllElements();
+    }
+    void clearStackB(){
         pushedBtnTeamB.removeAllElements();
     }
     private void addToStack(Stack<Integer> teamBtn, int lastPush) {
