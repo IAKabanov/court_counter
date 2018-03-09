@@ -116,7 +116,5 @@ class SaveRestoreScore {
         editor.putInt(APP_PREFERENCES_SCOREA4, 0);
         editor.putInt(APP_PREFERENCES_SCOREB4, 0);
         editor.apply();
-
-
     }
 }

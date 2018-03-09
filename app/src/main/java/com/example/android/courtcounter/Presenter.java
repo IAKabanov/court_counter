@@ -48,13 +48,14 @@ class Presenter implements Serializable{
     void clearStackB(){
         pushedBtnTeamB.removeAllElements();
     }
+
     private void addToStack(Stack<Integer> teamBtn, int lastPush) {
         teamBtn.push(lastPush);
     }
-    void removeFromStackA() {
+    private void removeFromStackA() {
         pushedBtnTeamA.pop();
     }
-    void removeFromStackB() {
+    private void removeFromStackB() {
         pushedBtnTeamB.pop();
     }
 

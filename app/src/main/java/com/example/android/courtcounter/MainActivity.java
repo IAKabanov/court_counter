@@ -114,45 +114,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.next:
-//                if (globalState <= maxState) {
-//                }
-                if (currentState < maxState) {
-
-                    presenter.setScoreTeamA(0);
-                    presenter.setScoreTeamB(0);
-                    currentState++;
-                    if ((globalState < fourthQuarter) && (currentState > globalState))
-                        globalState++;
-
-                    rebuildActivity(currentState);
-                }
+                nextBtn();
                 break;
 
             case R.id.previous:
-                if (currentState > maxState) {
-                    currentState--;
-                }
-                currentState--;
-                rebuildActivity(currentState);
+                previousBtn();
                 break;
 
             case R.id.finish:
-                saveRestore.save(this, globalState,
-                        presenter.getScoreTeamA(), presenter.getScoreTeamB());
-                globalState++;
-                presenter.clearStackA();
-                presenter.clearStackB();
-                rebuildActivity(currentState);
+                finishBtn();
                 break;
 
             case R.id.reset:
-//                presenter.setScoreTeamA(0);
-//                presenter.setScoreTeamB(0);
-//                presenter.clearStacks();
+                resetBtn();
                 break;
         }
         saveScoreOnActivity();
-        setBtnColor();
         rebuildActivity(currentState);
     }
 
@@ -221,6 +198,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             TextView TVGlobalScoreB = findViewById(R.id.globalScoreTeamB);
             TVGlobalScoreB.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void setBtnStandartColor() {
+        BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
     }
 
     public void setBtnColor() {
@@ -367,6 +353,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BtnTeamBOnePoint.setEnabled(false);
             BtnTeamBTwoPoint.setEnabled(false);
             BtnTeamBThreePoint.setEnabled(false);
+            setBtnStandartColor();
+
         } else {
             BtnTeamAOnePoint.setEnabled(true);
             BtnTeamATwoPoint.setEnabled(true);
@@ -374,14 +362,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BtnTeamBOnePoint.setEnabled(true);
             BtnTeamBTwoPoint.setEnabled(true);
             BtnTeamBThreePoint.setEnabled(true);
+            setBtnColor();
         }
 
-        if (presenter.getScoreTeamA() == 0){
+        if (presenter.getScoreTeamA() == 0) {
             presenter.clearStackA();
         }
-        if (presenter.getScoreTeamB() == 0){
+        if (presenter.getScoreTeamB() == 0) {
             presenter.clearStackB();
         }
+    }
+
+    void setTVQuarter(int quarter) {
+        TextView TVQuarter = findViewById(R.id.whatQuarter);
+        switch (quarter) {
+            case firstQuarter:
+                TVQuarter.setText(getResources().getString(R.string.firstQuarter));
+                break;
+            case secondQuarter:
+                TVQuarter.setText(getResources().getString(R.string.secondQuarter));
+                break;
+            case thirdQuarter:
+                TVQuarter.setText(getResources().getString(R.string.thirdQuarter));
+                break;
+            case fourthQuarter:
+                TVQuarter.setText(getResources().getString(R.string.fourthQuarter));
+                break;
+        }
+    }
+
+    void nextBtn(){
+        if (currentState < maxState) {
+
+            presenter.setScoreTeamA(0);
+            presenter.setScoreTeamB(0);
+            currentState++;
+            if ((globalState < fourthQuarter) && (currentState > globalState))
+                globalState++;
+            setTVQuarter(currentState);
+            rebuildActivity(currentState);
+        }
+    }
+
+    void previousBtn(){
+        if (currentState > maxState) {
+            currentState--;
+        }
+        currentState--;
+        setTVQuarter(currentState);
+        rebuildActivity(currentState);
+    }
+
+    void finishBtn(){
+        saveRestore.save(this, globalState,
+                presenter.getScoreTeamA(), presenter.getScoreTeamB());
+        globalState++;
+        presenter.clearStackA();
+        presenter.clearStackB();
+        rebuildActivity(currentState);
+    }
+
+    void resetBtn(){
+        presenter.setScoreTeamA(0);
+        presenter.setScoreTeamB(0);
+        presenter.clearStackA();
+        presenter.clearStackB();
+        saveRestore.clearSP(this);
+        globalState = firstQuarter;
+        currentState = globalState;
+        setTVQuarter(currentState);
     }
 
     void saveScoreOnActivity() {
