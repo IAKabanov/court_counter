@@ -5,13 +5,12 @@ import java.io.Serializable;
 import java.util.Stack;
 
 
-
-class Presenter implements Serializable{
+class Presenter implements Serializable {
     private int scoreTeamA, scoreTeamB;
     private Stack<Integer> pushedBtnTeamA, pushedBtnTeamB;
     private boolean longClick;
 
-    Presenter(){
+    Presenter() {
         scoreTeamA = 0;
         scoreTeamB = 0;
         pushedBtnTeamA = new Stack<>();
@@ -20,41 +19,48 @@ class Presenter implements Serializable{
     }
 
 
-    void setScoreTeamA(int _scoreA){
+    void setScoreTeamA(int _scoreA) {
         scoreTeamA = _scoreA;
     }
 
-    void setScoreTeamB(int _scoreB){
+    void setScoreTeamB(int _scoreB) {
         scoreTeamB = _scoreB;
     }
-    int getScoreTeamA(){
+
+    int getScoreTeamA() {
 
         return scoreTeamA;
     }
-    int getScoreTeamB(){
+
+    int getScoreTeamB() {
         return scoreTeamB;
     }
-    int getLastStackA(){
+
+    int getLastStackA() {
         return pushedBtnTeamA.peek();
     }
-    int getLastStackB(){
+
+    int getLastStackB() {
         return pushedBtnTeamB.peek();
     }
 
 
-    void clearStackA(){
+    void clearStackA() {
         pushedBtnTeamA.removeAllElements();
     }
-    void clearStackB(){
+
+    void clearStackB() {
         pushedBtnTeamB.removeAllElements();
     }
 
     private void addToStack(Stack<Integer> teamBtn, int lastPush) {
         teamBtn.push(lastPush);
     }
+
     private void removeFromStackA() {
         pushedBtnTeamA.pop();
     }
+
     private void removeFromStackB() {
         pushedBtnTeamB.pop();
     }
@@ -67,6 +73,7 @@ class Presenter implements Serializable{
             longClick = false;
         }
     }
+
     void onClickButtonTeamB(int whatPush) {
         if (!longClick) {
             scoreTeamB += whatPush;
@@ -87,6 +94,7 @@ class Presenter implements Serializable{
 
         }
     }
+
     void onLongClickButtonTeamB(int whatPush) {
         longClick = true;
         try {

@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CourtCounter.iml" filepath="$PROJECT_DIR$/CourtCounter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/courtcounter.iml" filepath="$PROJECT_DIR$/.idea/modules/courtcounter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/courtcounter.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/courtcounter.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/courtcounter.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/courtcounter.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/courtcounter.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/courtcounter.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/courtcounter.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/courtcounter.app.unitTest.iml" />
     </modules>
   </component>
 </project>

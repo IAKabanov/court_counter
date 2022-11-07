@@ -9,41 +9,18 @@ import android.widget.TextView;
 
 import java.util.EmptyStackException;
 
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
 
-    Button BtnTeamAOnePoint, BtnTeamATwoPoint, BtnTeamAThreePoint, BtnTeamBOnePoint,
-            BtnTeamBTwoPoint, BtnTeamBThreePoint, BtnReset, BtnNext, BtnPrevious, BtnFinish;
+    private Button btnTeamAOnePoint, btnTeamATwoPoint, btnTeamAThreePoint, btnTeamBOnePoint,
+            btnTeamBTwoPoint, btnTeamBThreePoint, btnReset, btnNext, btnPrevious, btnFinish;
 
-    Presenter presenter;
+    private Presenter presenter;
 
-    final int firstQuarter = 0, secondQuarter = 1, thirdQuarter = 2, fourthQuarter = 3;
-    int currentState = firstQuarter, globalState = firstQuarter;
-    final int maxState = fourthQuarter;
+    static final int FIRST_QUARTER = 0, SECOND_QUARTER = 1, THIRD_QUARTER = 2, FOURTH_QUARTER = 3;
+    private int currentState = FIRST_QUARTER, globalState = FIRST_QUARTER;
+    static final int MAX_STATE = FOURTH_QUARTER;
 
-    SaveRestoreScore saveRestore;
-
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getMenuInflater().inflate(R.menu.menu, menu);
-        }
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item != null) {
-            presenter.setScoreTeamA(0);
-            presenter.setScoreTeamB(0);
-            presenter.clearStacks();
-            displayForTeams();
-            setBtnColor();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-*/
+    private SaveRestoreScore saveRestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,79 +32,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         presenter = new Presenter();
 
-        BtnTeamAOnePoint = findViewById(R.id.points1A);
-        BtnTeamATwoPoint = findViewById(R.id.points2A);
-        BtnTeamAThreePoint = findViewById(R.id.points3A);
-        BtnTeamBOnePoint = findViewById(R.id.points1B);
-        BtnTeamBTwoPoint = findViewById(R.id.points2B);
-        BtnTeamBThreePoint = findViewById(R.id.points3B);
-        BtnNext = findViewById(R.id.next);
-        BtnPrevious = findViewById(R.id.previous);
-        BtnFinish = findViewById(R.id.finish);
-        BtnReset = findViewById(R.id.reset);
+        btnTeamAOnePoint = findViewById(R.id.points1A);
+        btnTeamATwoPoint = findViewById(R.id.points2A);
+        btnTeamAThreePoint = findViewById(R.id.points3A);
+        btnTeamBOnePoint = findViewById(R.id.points1B);
+        btnTeamBTwoPoint = findViewById(R.id.points2B);
+        btnTeamBThreePoint = findViewById(R.id.points3B);
+        btnNext = findViewById(R.id.next);
+        btnPrevious = findViewById(R.id.previous);
+        btnFinish = findViewById(R.id.finish);
+        btnReset = findViewById(R.id.reset);
 
-        BtnTeamAOnePoint.setOnClickListener(this);
-        BtnTeamATwoPoint.setOnClickListener(this);
-        BtnTeamAThreePoint.setOnClickListener(this);
-        BtnTeamBOnePoint.setOnClickListener(this);
-        BtnTeamBTwoPoint.setOnClickListener(this);
-        BtnTeamBThreePoint.setOnClickListener(this);
-        BtnNext.setOnClickListener(this);
-        BtnPrevious.setOnClickListener(this);
-        BtnFinish.setOnClickListener(this);
-        BtnReset.setOnClickListener(this);
+        btnTeamAOnePoint.setOnClickListener(this);
+        btnTeamATwoPoint.setOnClickListener(this);
+        btnTeamAThreePoint.setOnClickListener(this);
+        btnTeamBOnePoint.setOnClickListener(this);
+        btnTeamBTwoPoint.setOnClickListener(this);
+        btnTeamBThreePoint.setOnClickListener(this);
+        btnNext.setOnClickListener(this);
+        btnPrevious.setOnClickListener(this);
+        btnFinish.setOnClickListener(this);
+        btnReset.setOnClickListener(this);
 
-        BtnTeamAOnePoint.setOnLongClickListener(this);
-        BtnTeamATwoPoint.setOnLongClickListener(this);
-        BtnTeamAThreePoint.setOnLongClickListener(this);
-        BtnTeamBOnePoint.setOnLongClickListener(this);
-        BtnTeamBTwoPoint.setOnLongClickListener(this);
-        BtnTeamBThreePoint.setOnLongClickListener(this);
+        btnTeamAOnePoint.setOnLongClickListener(this);
+        btnTeamATwoPoint.setOnLongClickListener(this);
+        btnTeamAThreePoint.setOnLongClickListener(this);
+        btnTeamBOnePoint.setOnLongClickListener(this);
+        btnTeamBTwoPoint.setOnLongClickListener(this);
+        btnTeamBThreePoint.setOnLongClickListener(this);
 
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.points1A:
-                presenter.onClickButtonTeamA(1);
-                break;
-
-            case R.id.points2A:
-                presenter.onClickButtonTeamA(2);
-                break;
-
-            case R.id.points3A:
-                presenter.onClickButtonTeamA(3);
-                break;
-
-            case R.id.points1B:
-                presenter.onClickButtonTeamB(1);
-                break;
-
-            case R.id.points2B:
-                presenter.onClickButtonTeamB(2);
-                break;
-
-            case R.id.points3B:
-                presenter.onClickButtonTeamB(3);
-                break;
-
-            case R.id.next:
-                nextBtn();
-                break;
-
-            case R.id.previous:
-                previousBtn();
-                break;
-
-            case R.id.finish:
-                finishBtn();
-                break;
-
-            case R.id.reset:
-                resetBtn();
-                break;
+        int id = v.getId();
+        if (id == R.id.points1A) {
+            presenter.onClickButtonTeamA(1);
+        } else if (id == R.id.points2A) {
+            presenter.onClickButtonTeamA(2);
+        } else if (id == R.id.points3A) {
+            presenter.onClickButtonTeamA(3);
+        } else if (id == R.id.points1B) {
+            presenter.onClickButtonTeamB(1);
+        } else if (id == R.id.points2B) {
+            presenter.onClickButtonTeamB(2);
+        } else if (id == R.id.points3B) {
+            presenter.onClickButtonTeamB(3);
+        } else if (id == R.id.next) {
+            nextBtn();
+        } else if (id == R.id.previous) {
+            previousBtn();
+        } else if (id == R.id.finish) {
+            finishBtn();
+        } else if (id == R.id.reset) {
+            resetBtn();
         }
         saveScoreOnActivity();
         rebuildActivity(currentState);
@@ -135,25 +93,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onLongClick(View v) {
-        switch (v.getId()) {
-            case R.id.points1A:
-                presenter.onLongClickButtonTeamA(1);
-                break;
-            case R.id.points2A:
-                presenter.onLongClickButtonTeamA(2);
-                break;
-            case R.id.points3A:
-                presenter.onLongClickButtonTeamA(3);
-                break;
-            case R.id.points1B:
-                presenter.onLongClickButtonTeamB(1);
-                break;
-            case R.id.points2B:
-                presenter.onLongClickButtonTeamB(2);
-                break;
-            case R.id.points3B:
-                presenter.onLongClickButtonTeamB(3);
-                break;
+        int id = v.getId();
+        if (id == R.id.points1A) {
+            presenter.onLongClickButtonTeamA(1);
+        } else if (id == R.id.points2A) {
+            presenter.onLongClickButtonTeamA(2);
+        } else if (id == R.id.points3A) {
+            presenter.onLongClickButtonTeamA(3);
+        } else if (id == R.id.points1B) {
+            presenter.onLongClickButtonTeamB(1);
+        } else if (id == R.id.points2B) {
+            presenter.onLongClickButtonTeamB(2);
+        } else if (id == R.id.points3B) {
+            presenter.onLongClickButtonTeamB(3);
         }
         setBtnColor();
         return false;
@@ -170,198 +122,164 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onSaveInstanceState(outState);
     }
 
-//    @Override
-//    protected void onResume() {
-//        displayForTeams();
-//        setBtnColor();
-//        super.onResume();
-//    }
-
     public void displayForTeams(int globalScoreA, int globalScoreB) {
-        TextView TVScoreTeamA = findViewById(R.id.scoreTeamA);
-        TVScoreTeamA.setText(String.valueOf(presenter.getScoreTeamA()));
+        TextView tvScoreTeamA = findViewById(R.id.scoreTeamA);
+        tvScoreTeamA.setText(String.valueOf(presenter.getScoreTeamA()));
 
-        TextView TVScoreTeamB = findViewById(R.id.scoreTeamB);
-        TVScoreTeamB.setText(String.valueOf(presenter.getScoreTeamB()));
+        TextView tvScoreTeamB = findViewById(R.id.scoreTeamB);
+        tvScoreTeamB.setText(String.valueOf(presenter.getScoreTeamB()));
+
+        TextView tvGlobalScoreA = findViewById(R.id.globalScoreTeamA);
+        TextView tvGlobalScoreB = findViewById(R.id.globalScoreTeamB);
 
         if ((globalScoreA != 0) || (globalScoreB != 0)) {
-            TextView TVGlobalScoreA = findViewById(R.id.globalScoreTeamA);
-            TVGlobalScoreA.setVisibility(View.VISIBLE);
-            TVGlobalScoreA.setText(String.valueOf(globalScoreA));
+            tvGlobalScoreA.setVisibility(View.VISIBLE);
+            tvGlobalScoreA.setText(String.valueOf(globalScoreA));
 
-            TextView TVGlobalScoreB = findViewById(R.id.globalScoreTeamB);
-            TVGlobalScoreB.setVisibility(View.VISIBLE);
-            TVGlobalScoreB.setText(String.valueOf(globalScoreB));
+            tvGlobalScoreB.setVisibility(View.VISIBLE);
+            tvGlobalScoreB.setText(String.valueOf(globalScoreB));
         } else {
-            TextView TVGlobalScoreA = findViewById(R.id.globalScoreTeamA);
-            TVGlobalScoreA.setVisibility(View.INVISIBLE);
-            TextView TVGlobalScoreB = findViewById(R.id.globalScoreTeamB);
-            TVGlobalScoreB.setVisibility(View.INVISIBLE);
+            tvGlobalScoreA.setVisibility(View.INVISIBLE);
+            tvGlobalScoreB.setVisibility(View.INVISIBLE);
         }
     }
 
-    public void setBtnStandartColor() {
-        BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-        BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-        BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-        BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-        BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-        BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+    public void setBtnStandardColor() {
+        btnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        btnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        btnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        btnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        btnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+        btnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
     }
 
     public void setBtnColor() {
         try {
             switch (presenter.getLastStackA()) {
                 case 1:
-                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    btnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 2:
-                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    btnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 3:
-                    BtnTeamAOnePoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamATwoPoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamAThreePoint.getBackground().setColorFilter(getResources()
-                            .getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    btnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
                     break;
             }
         } catch (EmptyStackException ex) {
-            BtnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-            BtnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-            BtnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            btnTeamAOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            btnTeamATwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            btnTeamAThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
         }
 
         try {
             switch (presenter.getLastStackB()) {
                 case 1:
-                    BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    btnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 2:
-                    BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
-                    BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    btnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
                     break;
                 case 3:
-                    BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-                    BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
+                    btnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+                    btnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorPressedButton), PorterDuff.Mode.SRC);
                     break;
             }
 
         } catch (EmptyStackException ex) {
-            BtnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-            BtnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
-            BtnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            btnTeamBOnePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            btnTeamBTwoPoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
+            btnTeamBThreePoint.getBackground().setColorFilter(getResources().getColor(R.color.colorButtonNormal), PorterDuff.Mode.SRC);
 
         }
 
     }
 
     void rebuildActivity(int currentState) {
-
         switch (currentState) {
+            case FIRST_QUARTER:
+                btnPrevious.setVisibility(View.INVISIBLE);
+                btnNext.setVisibility(View.VISIBLE);
+                btnFinish.setVisibility(View.INVISIBLE);
 
-            case firstQuarter:
-                BtnPrevious.setVisibility(View.INVISIBLE);
-                BtnNext.setVisibility(View.VISIBLE);
-                BtnFinish.setVisibility(View.INVISIBLE);
-
-                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, firstQuarter));
-                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, firstQuarter));
+                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, FIRST_QUARTER));
+                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, FIRST_QUARTER));
 
                 displayForTeams(0, 0);
-
                 break;
 
-            case secondQuarter:
-                BtnPrevious.setVisibility(View.VISIBLE);
-                BtnNext.setVisibility(View.VISIBLE);
-                BtnFinish.setVisibility(View.INVISIBLE);
+            case SECOND_QUARTER:
+                btnPrevious.setVisibility(View.VISIBLE);
+                btnNext.setVisibility(View.VISIBLE);
+                btnFinish.setVisibility(View.INVISIBLE);
 
-                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, secondQuarter));
-                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, secondQuarter));
+                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, SECOND_QUARTER));
+                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, SECOND_QUARTER));
 
-                displayForTeams(saveRestore.restoreTeamA(this, firstQuarter),
-                        saveRestore.restoreTeamB(this, firstQuarter));
-
+                displayForTeams(saveRestore.restoreTeamA(this, FIRST_QUARTER), saveRestore.restoreTeamB(this, FIRST_QUARTER));
                 break;
 
-            case thirdQuarter:
-                BtnPrevious.setVisibility(View.VISIBLE);
-                BtnNext.setVisibility(View.VISIBLE);
-                BtnFinish.setVisibility(View.INVISIBLE);
+            case THIRD_QUARTER:
+                btnPrevious.setVisibility(View.VISIBLE);
+                btnNext.setVisibility(View.VISIBLE);
+                btnFinish.setVisibility(View.INVISIBLE);
 
+                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, THIRD_QUARTER));
+                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, THIRD_QUARTER));
 
-                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, thirdQuarter));
-                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, thirdQuarter));
-
-                int globalScoreA = saveRestore.restoreTeamA(this, firstQuarter) +
-                        saveRestore.restoreTeamA(this, secondQuarter);
-
-                int globalScoreB = saveRestore.restoreTeamB(this, firstQuarter) +
-                        saveRestore.restoreTeamB(this, secondQuarter);
+                int globalScoreA = saveRestore.restoreTeamA(this, FIRST_QUARTER) + saveRestore.restoreTeamA(this, SECOND_QUARTER);
+                int globalScoreB = saveRestore.restoreTeamB(this, FIRST_QUARTER) + saveRestore.restoreTeamB(this, SECOND_QUARTER);
 
                 displayForTeams(globalScoreA, globalScoreB);
-
                 break;
-            case fourthQuarter:
-                BtnPrevious.setVisibility(View.VISIBLE);
-                BtnNext.setVisibility(View.INVISIBLE);
+            case FOURTH_QUARTER:
+                btnPrevious.setVisibility(View.VISIBLE);
+                btnNext.setVisibility(View.INVISIBLE);
 
+                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, FOURTH_QUARTER));
+                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, FOURTH_QUARTER));
 
-                presenter.setScoreTeamA(saveRestore.restoreTeamA(this, fourthQuarter));
-                presenter.setScoreTeamB(saveRestore.restoreTeamB(this, fourthQuarter));
-
-                int globalScoreA2 = saveRestore.restoreTeamA(this, firstQuarter) +
-                        saveRestore.restoreTeamA(this, secondQuarter) +
-                        saveRestore.restoreTeamA(this, thirdQuarter);
-
-                int globalScoreB2 = saveRestore.restoreTeamB(this, firstQuarter) +
-                        saveRestore.restoreTeamB(this, secondQuarter) +
-                        saveRestore.restoreTeamB(this, thirdQuarter);
+                int globalScoreA2 = saveRestore.restoreTeamA(this, FIRST_QUARTER) + saveRestore.restoreTeamA(this, SECOND_QUARTER) + saveRestore.restoreTeamA(this, THIRD_QUARTER);
+                int globalScoreB2 = saveRestore.restoreTeamB(this, FIRST_QUARTER) + saveRestore.restoreTeamB(this, SECOND_QUARTER) + saveRestore.restoreTeamB(this, THIRD_QUARTER);
 
                 displayForTeams(globalScoreA2, globalScoreB2);
-
-                if (globalState == fourthQuarter + 1) {
-                    BtnFinish.setVisibility(View.INVISIBLE);
-                    BtnReset.setVisibility(View.VISIBLE);
+                if (globalState == FOURTH_QUARTER + 1) {
+                    btnFinish.setVisibility(View.INVISIBLE);
+                    btnReset.setVisibility(View.VISIBLE);
                 } else {
-                    BtnFinish.setVisibility(View.VISIBLE);
-                    BtnReset.setVisibility(View.INVISIBLE);
+                    btnFinish.setVisibility(View.VISIBLE);
+                    btnReset.setVisibility(View.INVISIBLE);
                 }
                 break;
         }
 
         if (currentState < globalState) {
-            BtnTeamAOnePoint.setEnabled(false);
-            BtnTeamATwoPoint.setEnabled(false);
-            BtnTeamAThreePoint.setEnabled(false);
-            BtnTeamBOnePoint.setEnabled(false);
-            BtnTeamBTwoPoint.setEnabled(false);
-            BtnTeamBThreePoint.setEnabled(false);
-            setBtnStandartColor();
+            btnTeamAOnePoint.setEnabled(false);
+            btnTeamATwoPoint.setEnabled(false);
+            btnTeamAThreePoint.setEnabled(false);
+            btnTeamBOnePoint.setEnabled(false);
+            btnTeamBTwoPoint.setEnabled(false);
+            btnTeamBThreePoint.setEnabled(false);
+            setBtnStandardColor();
 
         } else {
-            BtnTeamAOnePoint.setEnabled(true);
-            BtnTeamATwoPoint.setEnabled(true);
-            BtnTeamAThreePoint.setEnabled(true);
-            BtnTeamBOnePoint.setEnabled(true);
-            BtnTeamBTwoPoint.setEnabled(true);
-            BtnTeamBThreePoint.setEnabled(true);
+            btnTeamAOnePoint.setEnabled(true);
+            btnTeamATwoPoint.setEnabled(true);
+            btnTeamAThreePoint.setEnabled(true);
+            btnTeamBOnePoint.setEnabled(true);
+            btnTeamBTwoPoint.setEnabled(true);
+            btnTeamBThreePoint.setEnabled(true);
             setBtnColor();
         }
 
@@ -376,36 +294,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     void setTVQuarter(int quarter) {
         TextView TVQuarter = findViewById(R.id.whatQuarter);
         switch (quarter) {
-            case firstQuarter:
+            case FIRST_QUARTER:
                 TVQuarter.setText(getResources().getString(R.string.firstQuarter));
                 break;
-            case secondQuarter:
+            case SECOND_QUARTER:
                 TVQuarter.setText(getResources().getString(R.string.secondQuarter));
                 break;
-            case thirdQuarter:
+            case THIRD_QUARTER:
                 TVQuarter.setText(getResources().getString(R.string.thirdQuarter));
                 break;
-            case fourthQuarter:
+            case FOURTH_QUARTER:
                 TVQuarter.setText(getResources().getString(R.string.fourthQuarter));
                 break;
         }
     }
 
-    void nextBtn(){
-        if (currentState < maxState) {
-
+    void nextBtn() {
+        if (currentState < MAX_STATE) {
             presenter.setScoreTeamA(0);
             presenter.setScoreTeamB(0);
             currentState++;
-            if ((globalState < fourthQuarter) && (currentState > globalState))
-                globalState++;
+            if ((globalState < FOURTH_QUARTER) && (currentState > globalState)) globalState++;
             setTVQuarter(currentState);
             rebuildActivity(currentState);
         }
     }
 
-    void previousBtn(){
-        if (currentState > maxState) {
+    void previousBtn() {
+        if (currentState > MAX_STATE) {
             currentState--;
         }
         currentState--;
@@ -413,28 +329,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rebuildActivity(currentState);
     }
 
-    void finishBtn(){
-        saveRestore.save(this, globalState,
-                presenter.getScoreTeamA(), presenter.getScoreTeamB());
+    void finishBtn() {
+        saveRestore.save(this, globalState, presenter.getScoreTeamA(), presenter.getScoreTeamB());
         globalState++;
         presenter.clearStackA();
         presenter.clearStackB();
         rebuildActivity(currentState);
     }
 
-    void resetBtn(){
+    void resetBtn() {
         presenter.setScoreTeamA(0);
         presenter.setScoreTeamB(0);
         presenter.clearStackA();
         presenter.clearStackB();
         saveRestore.clearSP(this);
-        globalState = firstQuarter;
+        globalState = FIRST_QUARTER;
         currentState = globalState;
         setTVQuarter(currentState);
     }
 
     void saveScoreOnActivity() {
-        saveRestore.save(this, currentState,
-                presenter.getScoreTeamA(), presenter.getScoreTeamB());
+        saveRestore.save(this, currentState, presenter.getScoreTeamA(), presenter.getScoreTeamB());
     }
 }

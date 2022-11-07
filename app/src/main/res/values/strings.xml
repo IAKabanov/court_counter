@@ -3,7 +3,7 @@
     <string name="reset">Reset</string>
     <string name="team_a">Team A</string>
     <string name="team_b">Team B</string>
-    <string name="score">0</string>
+    <string name="default_score">0</string>
     <string name="points3">+3 Points</string>
     <string name="points2">+2 Points</string>
     <string name="points1">Free throw</string>
